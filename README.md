@@ -1,4 +1,6 @@
-# LM-KBC 2026 — submission (team CS2)
+# LM-KBC 2026 submission (team CS2)
+
+System description paper: to appear at AKBC @ EMNLP 2026.
 
 Code and predictions for our entry to the [LM-KBC 2026 shared task](https://lm-kbc.github.io/challenge2026/)
 (AKBC @ EMNLP 2026).
