@@ -2,6 +2,7 @@
 # Regenerate the submitted predictions. Needs a vLLM server for gemma-4-31B on $PORT.
 #   vllm serve google/gemma-4-31B --port 8000 --max-model-len 4096
 set -euo pipefail
+export PYTHONPATH="$PWD:$PWD/src:${PYTHONPATH:-}"
 PORT="${PORT:-8000}"
 DATA="${DATA:-data}"          # official train.jsonl / val.jsonl / test.jsonl
 OUT="${OUT:-results}"

@@ -21,9 +21,32 @@ Official test (Codabench phase 29684), macro F1:
 | hasCapacity | 0.3265 |
 | **All relations** | **0.6961** |
 
-0.6906 on official validation. Organiser baseline is 0.308 on validation.
+0.6843 on official validation (475-row set, see below). Organiser baseline is 0.308 on validation.
 
 The submitted file is `predictions/predictions.jsonl` (475 rows, md5 `a6f64abb2a90b5c26e391fbf9ca677c0`).
+
+## Verifying
+
+Test labels are withheld, so the test score can only be reproduced by submitting to Codabench.
+The validation score reproduces locally with no GPU:
+
+```bash
+bash verify.sh path/to/val.jsonl     # from https://github.com/lm-kbc/dataset2026
+```
+
+| relation | validation F1 |
+|---|---|
+| countryLandBordersCountry | 0.9970 |
+| companyTradesAtStockExchange | 0.8386 |
+| hasArea | 0.7800 |
+| personHasCityOfDeath | 0.5800 |
+| awardWonBy | 0.2374 |
+| hasCapacity | 0.3608 |
+| **All relations** | **0.6843** |
+
+`predictions/predictions_val.jsonl` was generated before the organisers renamed 20 validation
+subjects on 2026-08-07. Those rows are scored as empty rather than re-keyed, which is the
+conservative choice; re-keying them instead gives 0.6983.
 
 ## Method
 
