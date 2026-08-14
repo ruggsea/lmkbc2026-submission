@@ -2,8 +2,7 @@
 
 System description paper: to appear at AKBC @ EMNLP 2026.
 
-Code and predictions for our entry to the [LM-KBC 2026 shared task](https://lm-kbc.github.io/challenge2026/)
-(AKBC @ EMNLP 2026).
+Code and predictions for our entry to the [LM-KBC 2026 shared task](https://lm-kbc.github.io/challenge2026/).
 
 Closed-book, one open-weight model, no training. `gemma-4-31B` base with a separate elicitation
 and aggregation recipe per relation.
