@@ -1,0 +1,74 @@
+# LM-KBC 2026 — submission (team CS2)
+
+Code and predictions for our entry to the [LM-KBC 2026 shared task](https://lm-kbc.github.io/challenge2026/)
+(AKBC @ EMNLP 2026).
+
+Closed-book, one open-weight model, no training. `gemma-4-31B` base with a separate elicitation
+and aggregation recipe per relation.
+
+## Results
+
+Official test (Codabench phase 29684), macro F1:
+
+| relation | F1 |
+|---|---|
+| countryLandBordersCountry | 0.9753 |
+| companyTradesAtStockExchange | 0.8470 |
+| hasArea | 0.8500 |
+| personHasCityOfDeath | 0.6000 |
+| awardWonBy | 0.3609 |
+| hasCapacity | 0.3265 |
+| **All relations** | **0.6961** |
+
+0.6906 on official validation. Organiser baseline is 0.308 on validation.
+
+The submitted file is `predictions/predictions.jsonl` (475 rows, md5 `a6f64abb2a90b5c26e391fbf9ca677c0`).
+
+## Method
+
+One model, six recipes. Every relation samples `n` completions from the base model and aggregates
+them with non-neural rules. Thresholds are selected on official train.
+
+| relation | elicitation | draws | aggregation |
+|---|---|---|---|
+| countryLandBordersCountry | few-shot completion | n=30, t=0.7 | keep candidate if it appears in ≥0.35 of draws |
+| companyTradesAtStockExchange | HQ/parent/listing scaffold probe with explicit abstention | n=30, t=0.7 | agreement ≥0.35 over scaffold-complete draws |
+| hasArea | wikitext `\| area_km2 =` source anchor | n=100, t=0.8 | cluster in log10 space, w=0.05, median of largest cluster |
+| personHasCityOfDeath | prime completion ∪ CoT self-consistency, yes/no gate | n=30 / 50 / 20, t=0.7 | modal city if vote share ≥ threshold |
+| hasCapacity | REGION enumerate-then-pick | n=30, t=0.8 | numeric cluster vote, r=0.025 |
+| awardWonBy | list completion | n=20, t=0.8 | keep name if it appears in ≥0.46 of draws |
+
+## Reproducing
+
+Serve the model, then run the pipeline:
+
+```bash
+pip install -r requirements.txt
+vllm serve google/gemma-4-31B --port 8000 --max-model-len 4096
+PORT=8000 DATA=path/to/official/data bash run_all.sh
+```
+
+`run_all.sh` writes per-relation outputs, assembles them into `predictions.jsonl`, and scores it
+with the official `evaluate.py`. Get `train.jsonl`, `val.jsonl` and `test.jsonl` from the
+[organisers' repo](https://github.com/lm-kbc/dataset2026) — note that `test.jsonl` changed on
+2026-08-07 (15 subjects renamed, 2 rows dropped), so re-download rather than reusing an older copy.
+
+Sampling is stochastic, so a fresh run will not be byte-identical to the submitted file.
+
+## Rules
+
+- Closed-book at inference: no retrieval, no internet, no external corpora, no KB lookups.
+- No fine-tuning, LoRA, probes or soft prompts.
+- One model, 31B parameters, inside the 32B budget.
+- `pseudoval/` builds an offline Wikidata-derived development set used for early threshold screening.
+  It is not part of the inference path.
+
+## Layout
+
+```
+src/            per-relation elicitation and aggregation, plus the assembler
+pseudoval/      SPARQL construction of the auxiliary dev set
+predictions/    the submitted file
+evaluate.py     official scorer (from the organisers' repo)
+run_all.sh      end-to-end regeneration
+```
