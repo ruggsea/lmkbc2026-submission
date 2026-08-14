@@ -17,4 +17,6 @@ python src/cap_region_eval.py      --port "$PORT" --split test --n 30 --temp 0.8
 python src/award_base.py           --port "$PORT" --split test --fmt list --n 20 --out "$OUT/award.jsonl"
 
 python src/assemble.py --in "$OUT" --out "$OUT/predictions.jsonl"
-python evaluate.py -p "$OUT/predictions.jsonl" -g "$DATA/test.jsonl"
+
+# Test labels are withheld: submit $OUT/predictions.jsonl to Codabench for a score.
+# evaluate.py is included for scoring against any split whose gold you do have.
