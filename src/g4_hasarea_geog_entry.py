@@ -49,7 +49,7 @@ def build_prompt(subject):
 
 def gold_rows(split):
     # 31bk #2: leak-free 500-row/relation design split (tools/build_bigdesign.py).
-    p = REPO / "data/g4_bigdesign/bigdesign.jsonl" if split == "bigdesign" else REPO / f"data/official/{split}.jsonl"
+    p = REPO / "data/g4_bigdesign/bigdesign.jsonl" if split == "bigdesign" else REPO / f"data/off_{split}.jsonl"
     return [r for r in read_jsonl_file(str(p)) if r["Relation"] == REL]
 
 

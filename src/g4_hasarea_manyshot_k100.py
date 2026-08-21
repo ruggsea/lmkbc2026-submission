@@ -101,9 +101,9 @@ def build_prompt(subject, famous, seed=0):
 
 def gold_rows(split):
     pmap = {
-        "train": "data/official/train.jsonl",
-        "val": "data/official/val.jsonl",
-        "test": "data/official/test.jsonl",
+        "train": "data/off_train.jsonl",
+        "val": "data/off_val.jsonl",
+        "test": "data/off_test.jsonl",
         # 31bk #2: leak-free 500-row/relation design split (tools/build_bigdesign.py).
         "bigdesign": "data/g4_bigdesign/bigdesign.jsonl",
     }

@@ -1,3 +1,12 @@
 __pycache__/
 *.pyc
 results/
+# generation scratch: channels are written to a run directory, not into src/gen
+src/gen/ha2_*.jsonl
+src/gen/ha_*.jsonl
+src/gen/awyr_*.json
+src/gen/awr_cycle_*.json
+src/gen/cdch_*.json
+src/gen/cdg_*.json
+run_test/
+run_val/
